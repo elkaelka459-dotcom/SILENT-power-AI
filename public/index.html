@@ -1,239 +1,35 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Silent Power Studio V3</title>
-<style>
-:root{--bg:#080808;--panel:#111;--line:#292929;--gold:#d6aa45;--text:#f5f5f5;--muted:#9a9a9a}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% 0,#1a150b 0,#080808 42%);color:var(--text);font-family:Inter,Arial,sans-serif}
-.wrap{max-width:1280px;margin:auto;padding:28px}.brand{display:flex;align-items:center;gap:14px}.logo{width:48px;height:48px;border:1px solid #6f5724;border-radius:12px;display:grid;place-items:center;color:var(--gold);font-weight:900;letter-spacing:1px}.brand h1{font-size:18px;margin:0;letter-spacing:3px}.brand p{margin:3px 0 0;color:#8f8f8f;font-size:11px;letter-spacing:2px}
-.hero{margin:34px 0 22px}.hero h2{font-size:46px;line-height:1.03;margin:0;max-width:800px}.hero h2 span{color:var(--gold)}.hero p{color:#aaa;max-width:760px;line-height:1.6}
-.grid{display:grid;grid-template-columns:420px 1fr;gap:22px}.panel{background:rgba(17,17,17,.92);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 20px 60px #0008}.label{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:2px;margin:0 0 9px}
-textarea,select,input{width:100%;background:#090909;color:#fff;border:1px solid #303030;border-radius:12px;padding:13px;font:inherit;outline:none}textarea{min-height:230px;resize:vertical;line-height:1.55}select{cursor:pointer}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.btn{border:1px solid #4d4d4d;background:#151515;color:#fff;border-radius:12px;padding:13px;font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(180deg,#e1ba5b,#b88a2e);color:#090909;border-color:#e1ba5b}.btn:disabled{opacity:.45;cursor:not-allowed}.status{margin-top:12px;color:#aaa;font-size:12px;min-height:18px}
-.stage{display:grid;grid-template-columns:minmax(270px,390px) 1fr;gap:18px}.phone{background:#000;border:1px solid #353535;border-radius:25px;padding:9px;aspect-ratio:9/16;max-height:720px;margin:auto;box-shadow:0 0 0 1px #000,0 30px 80px #000}.phone canvas{width:100%;height:100%;display:block;border-radius:18px;background:#101010}
-.scenes{min-height:300px}.scene{border:1px solid #252525;background:#0c0c0c;border-radius:12px;padding:12px;margin-bottom:8px}.scene strong{color:var(--gold);font-size:12px}.scene b{display:block;margin:4px 0;font-size:14px}.scene small{color:#999;line-height:1.4}
-.pill{display:inline-block;border:1px solid #3a3020;color:var(--gold);padding:5px 8px;border-radius:999px;font-size:10px;letter-spacing:1px}
-.footer{color:#666;font-size:11px;margin-top:18px;text-align:center}
-@media(max-width:950px){.grid{grid-template-columns:1fr}.stage{grid-template-columns:1fr}.phone{max-height:none;width:min(390px,100%)}.hero h2{font-size:34px}}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <header class="brand">
-    <div class="logo">SP</div>
-    <div><h1>SILENT POWER STUDIO</h1><p>POWER BEGINS WHERE NOISE ENDS.</p></div>
-  </header>
-
-  <section class="hero">
-    <span class="pill">V3 • TWO-HOST MOTIVATIONAL PODCAST</span>
-    <h2>Turn one idea into a <span>cinematic Short.</span></h2>
-    <p>Original two-person podcast dialogue, AI storyboarding, AI B-roll, professional narration, animated hosts, captions and a 9:16 export — built around the Silent Power identity.</p>
-  </section>
-
-  <main class="grid">
-    <section class="panel">
-      <div class="label">Your idea or script</div>
-      <textarea id="script" placeholder="Example: Stop waiting for motivation. Discipline is what you do when nobody is watching.">Stop waiting for motivation. Stop waiting for the perfect moment. Nobody is coming to do the work for you.
-
-There will be days when you feel tired. Do it anyway. Keep the promise you made to yourself when nobody was watching.
-
-That's discipline. Become the person who can save himself.</textarea>
-
-      <div class="row">
-        <div><div class="label">Language</div><select id="language"><option>English</option><option>Spanish</option><option>French</option><option>Arabic</option></select></div>
-        <div><div class="label">Length</div><select id="duration"><option value="30">30 sec</option><option value="45" selected>45 sec</option><option value="60">60 sec</option></select></div>
-      </div>
-      <div class="row">
-        <div><div class="label">Visual style</div><select id="style"><option>Premium cinematic 3D cartoon podcast</option><option>Stylized realistic animation</option><option>Dark cinematic graphic novel</option></select></div>
-        <div><div class="label">Voice pair</div><select id="voices"><option value="zeus,luna">Deep male + calm female</option><option value="atlas,athena">Deep male + confident female</option><option value="orion,hera">Warm male + warm female</option></select></div>
-      </div>
-
-      <div class="btns">
-        <button class="btn primary" id="storyBtn">GENERATE PODCAST</button>
-        <button class="btn" id="voiceBtn" disabled>BUILD VOICES</button>
-        <button class="btn" id="visualBtn" disabled>GENERATE B-ROLL</button>
-        <button class="btn primary" id="renderBtn" disabled>RENDER SHORT</button>
-      </div>
-      <div class="status" id="status">Ready.</div>
-      <audio id="audio" controls style="width:100%;margin-top:8px;display:none"></audio>
-    </section>
-
-    <section class="panel stage">
-      <div class="phone"><canvas id="canvas" width="720" height="1280"></canvas></div>
-      <div>
-        <div class="label">AI scene plan</div>
-        <div id="scenes" class="scenes"><div class="scene"><strong>WAITING</strong><b>Your podcast will appear here.</b><small>Generate the podcast to create an original two-host conversation.</small></div></div>
-        <div class="btns">
-          <button class="btn" id="playBtn" disabled>PLAY PREVIEW</button>
-          <button class="btn" id="exportBtn" disabled>EXPORT WEBM</button>
-        </div>
-      </div>
-    </section>
-  </main>
-  <div class="footer">Original Silent Power characters and scripts. Use only media you own or are licensed to use.</div>
-</div>
-
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Silent Power Studio — Ultimate</title><style>
+:root{--bg:#050608;--panel:#0c0f12;--panel2:#101419;--line:#242a30;--gold:#e2b84d;--gold2:#a97b20;--txt:#f4f4f4;--muted:#87909a;--ok:#54d18a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% -10%,#2a210d 0,#090a0c 35%,#050608 70%);color:var(--txt);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:1500px;margin:auto;padding:20px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border:1px solid #6e551e;border-radius:14px;display:grid;place-items:center;color:var(--gold);font-weight:950;letter-spacing:-1px;background:linear-gradient(145deg,#17130a,#090a0c)}.brand b{display:block;letter-spacing:2.5px;font-size:15px}.brand small{display:block;color:#727a82;margin-top:4px;letter-spacing:1.2px;font-size:9px}.badge{font-size:10px;letter-spacing:1.4px;color:var(--gold);border:1px solid #4e3c18;padding:8px 11px;border-radius:999px;background:#171207}.hero{padding:28px 0 18px}.hero h1{font-size:40px;line-height:1.05;margin:0 0 10px;max-width:900px}.hero h1 span{color:var(--gold)}.hero p{max-width:850px;color:#9ca3aa;line-height:1.55;margin:0}.grid{display:grid;grid-template-columns:360px 1fr;gap:16px}.panel{background:linear-gradient(180deg,#0d1013ee,#090b0dee);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:0 22px 80px #000b}.label{font-size:10px;text-transform:uppercase;letter-spacing:1.7px;color:#858d95;margin:0 0 8px}.textarea{width:100%;min-height:210px;background:#060709;border:1px solid #2a3036;border-radius:12px;color:#fff;padding:12px;resize:vertical;font:inherit;line-height:1.5;outline:none}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.select{width:100%;background:#07090b;border:1px solid #2a3036;color:#fff;border-radius:10px;padding:11px;outline:none}.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.btn{border:1px solid #30363c;background:#15191d;color:#fff;padding:11px 9px;border-radius:10px;font-weight:850;font-size:11px;cursor:pointer}.btn.primary{background:linear-gradient(180deg,#efc866,#b98421);border-color:#edc45e;color:#090806}.btn.full{grid-column:1/-1}.btn:disabled{opacity:.38;cursor:not-allowed}.check{display:flex;align-items:center;gap:8px;color:#858d95;font-size:10px;margin-top:10px}.check input{accent-color:var(--gold)}.status{margin-top:11px;min-height:18px;color:#aeb5bb;font-size:11px}.progress{height:4px;background:#1c2126;border-radius:10px;overflow:hidden;margin-top:7px}.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .25s}.mainstage{display:grid;grid-template-columns:minmax(330px,430px) 1fr;gap:16px}.phone{background:#000;border:1px solid #30353a;border-radius:25px;padding:8px;width:min(430px,100%);aspect-ratio:9/16;margin:auto;box-shadow:0 25px 100px #000}.phone canvas{display:block;width:100%;height:100%;border-radius:18px;background:#070707}.side{min-width:0}.sidehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.pill{font-size:9px;color:var(--ok);border:1px solid #1e5a3a;padding:5px 8px;border-radius:999px}.scene{background:#0a0d10;border:1px solid #20262b;border-radius:12px;padding:10px;margin-bottom:8px}.scene.active{border-color:#806225;box-shadow:0 0 0 1px #80622555 inset}.scene .meta{font-size:9px;color:var(--gold);letter-spacing:1px}.scene b{display:block;font-size:12px;margin:4px 0}.scene small{display:block;color:#747d85;font-size:10px;line-height:1.4}.scene .tag{float:right;color:#697179;font-size:8px}.tools{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:15px}.tool{border:1px solid #242a2f;background:#0b0e11;border-radius:10px;padding:10px}.tool strong{display:block;font-size:10px}.tool span{display:block;color:#707982;font-size:9px;margin-top:3px}.timeline{margin-top:16px}.timelinebar{display:flex;gap:6px;overflow:hidden}.seg{height:58px;flex:1;min-width:100px;border:1px solid #2a3035;border-radius:9px;background:#11151a;padding:8px}.seg b{font-size:9px;color:var(--gold)}.seg span{display:block;font-size:9px;color:#8b939a;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.export{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #22272c;padding-top:14px}.export small{color:#747d84}.audio{width:100%;margin-top:9px;display:none}.file{display:none}.footer{text-align:center;color:#555d64;font-size:9px;margin:16px 0}.mini{font-size:9px;color:#666f77;line-height:1.45;margin-top:8px}@media(max-width:1100px){.grid{grid-template-columns:1fr}.mainstage{grid-template-columns:minmax(280px,420px) 1fr}.hero h1{font-size:34px}}@media(max-width:760px){.top{align-items:flex-start}.badge{display:none}.mainstage{grid-template-columns:1fr}.phone{width:min(390px,100%)}.tools{grid-template-columns:1fr 1fr}.btns{grid-template-columns:1fr}.btn.full{grid-column:auto}}
+</style></head><body><div class="wrap">
+<header class="top"><div class="brand"><div class="logo">SP</div><div><b>SILENT POWER STUDIO</b><small>POWER BEGINS WHERE NOISE ENDS.</small></div></div><div class="badge">ULTIMATE • REALISTIC PODCAST ENGINE</div></header>
+<section class="hero"><h1>Turn one idea into a <span>cinematic podcast Short.</span></h1><p>Original fictional male + female hosts, realistic studio, cinematic B-roll, professional voices, captions, camera punch-ins and a publish-ready 9:16 render.</p></section>
+<main class="grid"><section class="panel"><div class="label">Idea or script</div><textarea id="script" class="textarea">Stop waiting for motivation. Discipline is what you do when nobody is watching. Some days you will feel tired, distracted, or afraid. Do it anyway. Keep the promise you made to yourself.</textarea><div class="row"><div><div class="label">Language</div><select id="language" class="select"><option>English</option><option>French</option><option>Spanish</option><option>Arabic</option></select></div><div><div class="label">Length</div><select id="duration" class="select"><option value="30">30 sec</option><option value="45" selected>45 sec</option><option value="60">60 sec</option></select></div></div><div class="row"><div><div class="label">Studio</div><select id="look" class="select"><option>Premium photorealistic cinematic studio</option><option>Dark luxury podcast studio</option><option>Warm documentary podcast studio</option></select></div><div><div class="label">Voice pair</div><select id="voices" class="select"><option value="zeus,luna">Deep male + calm female</option><option value="zeus,hera">Deep male + confident female</option><option value="zeus,athena">Deep male + intelligent female</option></select></div></div><div class="btns"><button class="btn primary full" id="generate">✦ GENERATE COMPLETE PODCAST</button><button class="btn" id="story" disabled>01 • STORY</button><button class="btn" id="studio" disabled>02 • REAL STUDIO</button><button class="btn" id="voice" disabled>03 • VOICES</button><button class="btn" id="broll" disabled>04 • B-ROLL</button><button class="btn primary full" id="render" disabled>05 • RENDER 9:16 SHORT</button><button class="btn" id="export" disabled>EXPORT WEBM</button><label class="btn" for="music">ADD LICENSED MUSIC</label><input class="file" id="music" type="file" accept="audio/*"></div><div class="check"><input id="licensed" type="checkbox" checked> I will use only media I own or have permission to use.</div><div class="status" id="status">Ready.</div><div class="progress"><i id="bar"></i></div><audio id="audio" class="audio" controls></audio><div class="mini">The engine uses Cloudflare Workers AI for story, image and voice generation. Image generation can incur AI usage charges depending on your Cloudflare plan.</div></section>
+<section class="panel mainstage"><div class="phone"><canvas id="cv" width="720" height="1280"></canvas></div><div class="side"><div class="sidehead"><div class="label" style="margin:0">AI SCENE PLAN</div><div class="pill" id="state">READY</div></div><div id="scenes"><div class="scene"><div class="meta">WAITING</div><b>Your finished podcast will appear here.</b><small>Click Generate Complete Podcast.</small></div></div><div class="tools"><div class="tool"><strong>REAL HOSTS</strong><span>Male + Female</span></div><div class="tool"><strong>CINEMATIC</strong><span>Push-ins + cuts</span></div><div class="tool"><strong>CAPTIONS</strong><span>Auto styled</span></div><div class="tool"><strong>9:16</strong><span>1080 × 1920</span></div></div><div class="timeline"><div class="label">SCENE TIMELINE</div><div id="timeline" class="timelinebar"></div></div><div class="export"><div><b>Publish-ready render</b><small>Original Silent Power format</small></div><button class="btn primary" id="export2" disabled>EXPORT VIDEO</button></div></div></section></main><div class="footer">SILENT POWER • ORIGINAL FICTIONAL HOSTS • NO CELEBRITY LIKENESS • NO COPIED CONTENT</div></div>
 <script>
-const $=id=>document.getElementById(id);
-let plan=null, audioBlob=null, broll=[], recording=null, lastBlob=null, raf=0, start=0, audioCtx=null, sourceNode=null;
-const canvas=$("canvas"), ctx=canvas.getContext("2d");
-
-function setStatus(t){$("status").textContent=t}
-function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-
-function drawAvatar(x,y,scale,side,talking,emotion){
-  ctx.save(); ctx.translate(x,y); ctx.scale(scale,scale);
-  // chair
-  ctx.fillStyle="#151515"; ctx.beginPath(); ctx.roundRect(-90,95,180,150,35); ctx.fill();
-  // body/jacket
-  ctx.fillStyle=side==="male"?"#1a1a1a":"#252018"; ctx.beginPath(); ctx.roundRect(-92,55,184,145,45); ctx.fill();
-  ctx.strokeStyle="#a27a2b";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(0,70);ctx.lineTo(0,180);ctx.stroke();
-  // neck
-  ctx.fillStyle="#c8875f";ctx.fillRect(-22,25,44,55);
-  // head
-  ctx.fillStyle="#c8875f";ctx.beginPath();ctx.ellipse(0,-20,72,86,0,0,Math.PI*2);ctx.fill();
-  // hair
-  ctx.fillStyle=side==="male"?"#17110d":"#21160f";ctx.beginPath();
-  if(side==="male"){ctx.arc(0,-48,72,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(-70,-48,140,28)}
-  else {ctx.arc(0,-52,75,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(-74,-48,148,74)}
-  // eyes
-  ctx.fillStyle="#070707";ctx.beginPath();ctx.ellipse(-25,-23,7,4,0,0,Math.PI*2);ctx.ellipse(25,-23,7,4,0,0,Math.PI*2);ctx.fill();
-  // nose
-  ctx.strokeStyle="#9b6245";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(-4,8);ctx.lineTo(8,10);ctx.stroke();
-  // mouth talking
-  ctx.fillStyle="#2b1110";ctx.beginPath();ctx.ellipse(0,31,talking?18:11,talking?10:4,0,0,Math.PI*2);ctx.fill();
-  if(talking){ctx.fillStyle="#eee";ctx.beginPath();ctx.ellipse(0,29,10,3,0,0,Math.PI*2);ctx.fill()}
-  // headphones
-  ctx.strokeStyle="#b48a38";ctx.lineWidth=6;ctx.beginPath();ctx.arc(0,-32,83,Math.PI*1.05,Math.PI*1.95);ctx.stroke();
-  ctx.fillStyle="#b48a38";ctx.fillRect(-87,-12,14,38);ctx.fillRect(73,-12,14,38);
-  // mic
-  ctx.strokeStyle="#b48a38";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(side==="male"?75:-75,65);ctx.lineTo(side==="male"?55:-55,5);ctx.stroke();
-  ctx.fillStyle="#1c1c1c";ctx.beginPath();ctx.roundRect(side==="male"?42:-62,-3,20,55,10);ctx.fill();
-  ctx.restore();
-}
-
-function drawFrame(t){
-  ctx.clearRect(0,0,720,1280);
-  const g=ctx.createLinearGradient(0,0,720,1280);g.addColorStop(0,"#0d0d0d");g.addColorStop(1,"#030303");ctx.fillStyle=g;ctx.fillRect(0,0,720,1280);
-  if(broll.length){
-    const img=broll[Math.min(broll.length-1, Math.floor((t/Math.max(1,(plan?.scenes?.length||1)))))];
-    if(img && img.complete){ctx.globalAlpha=.28;ctx.drawImage(img,0,0,720,1280);ctx.globalAlpha=1}
-  }
-  ctx.fillStyle="#0a0a0acc";ctx.fillRect(0,0,720,120);
-  ctx.fillStyle="#d6aa45";ctx.font="900 26px Arial";ctx.fillText("SILENT POWER",38,54);
-  ctx.fillStyle="#9b9b9b";ctx.font="14px Arial";ctx.fillText("POWER BEGINS WHERE NOISE ENDS.",38,82);
-
-  const sceneCount=plan?.scenes?.length||1, idx=Math.min(sceneCount-1,Math.floor(t/Math.max(1,(plan?.duration||45)/sceneCount)));
-  const sc=plan?.scenes?.[idx]||{speaker:"A",dialogue:"Your story starts here.",caption:"SILENT POWER"};
-  const talkA=sc.speaker==="A" && Math.floor(t*5)%2===0, talkB=sc.speaker==="B" && Math.floor(t*5)%2===0;
-  drawAvatar(190,690,1.22,"male",talkA,"calm"); drawAvatar(530,690,1.22,"female",talkB,"calm");
-  // table
-  ctx.fillStyle="#111";ctx.beginPath();ctx.ellipse(360,865,265,72,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#9a742d";ctx.lineWidth=2;ctx.stroke();
-  // caption card
-  ctx.fillStyle="#f2f2f2";ctx.beginPath();ctx.roundRect(35,955,650,180,24);ctx.fill();
-  ctx.fillStyle="#111";ctx.font="900 29px Arial";wrapText(sc.caption||sc.dialogue,55,1005,610,42,3);
-  ctx.fillStyle="#d6aa45";ctx.font="900 16px Arial";ctx.fillText(sc.speaker==="A"?"HOST A":"HOST B",55,1180);
-  ctx.fillStyle="#777";ctx.font="12px Arial";ctx.fillText("MASTER YOUR MIND. CONTROL YOUR LIFE.",55,1210);
-}
-function wrapText(text,x,y,maxW,lineH,maxLines){
-  const words=String(text).split(/\s+/);let line="",lines=[];
-  for(const w of words){const test=line?line+" "+w:w;if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=w}else line=test}
-  if(line)lines.push(line);lines=lines.slice(0,maxLines);lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineH))
-}
-function loop(){const t=(performance.now()-start)/1000;drawFrame(t);raf=requestAnimationFrame(loop)}
-
-async function api(path,body){
-  const r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-  const data=await r.json().catch(()=>({}));
-  if(!r.ok)throw new Error(data.error||"Request failed");
-  return data;
-}
-
-$("storyBtn").onclick=async()=>{
-  try{
-    setStatus("Creating the two-host conversation…");
-    plan=await api("/api/story",{script:$("script").value,language:$("language").value,duration:$("duration").value,style:$("style").value});
-    $("scenes").innerHTML=plan.scenes.map((s,i)=>`<div class="scene"><strong>SCENE ${i+1} • ${escapeHtml(s.speaker)}</strong><b>${escapeHtml(s.caption)}</b><small>${escapeHtml(s.dialogue)}<br><br>${escapeHtml(s.visual)}</small></div>`).join("");
-    $("voiceBtn").disabled=false;$("visualBtn").disabled=false;
-    setStatus(`${plan.scenes.length} scenes ready. Build the voices and B-roll.`);
-    start=performance.now();cancelAnimationFrame(raf);loop();
-  }catch(e){setStatus("Error: "+e.message)}
-};
-
-$("voiceBtn").onclick=async()=>{
-  if(!plan)return;
-  try{
-    setStatus("Generating professional narration…");
-    const pair=$("voices").value.split(",");
-    const chunks=[];
-    for(let i=0;i<plan.scenes.length;i++){
-      const s=plan.scenes[i];
-      const d=await api("/api/voice",{text:s.dialogue,speaker:s.speaker==="A"?pair[0]:pair[1]});
-      const bin=atob(d.base64), arr=new Uint8Array(bin.length);for(let j=0;j<bin.length;j++)arr[j]=bin.charCodeAt(j);
-      chunks.push(arr);
-    }
-    // MP3 chunks are kept individually for robust playback/rendering.
-    plan.voiceChunks=chunks.map(a=>URL.createObjectURL(new Blob([a],{type:"audio/mpeg"})));
-    audioBlob=null;
-    $("audio").style.display="block";
-    $("audio").src=plan.voiceChunks[0];
-    $("renderBtn").disabled=false;$("exportBtn").disabled=false;
-    setStatus("Voices ready. You can render the full Short.");
-  }catch(e){setStatus("Voice error: "+e.message)}
-};
-
-$("visualBtn").onclick=async()=>{
-  if(!plan)return;
-  try{
-    setStatus("Generating cinematic B-roll scenes…");broll=[];
-    for(let i=0;i<plan.scenes.length;i++){
-      const d=await api("/api/image",{prompt:plan.scenes[i].visual,style:$("style").value});
-      const img=new Image();img.src=d.dataURI;await img.decode();broll.push(img);
-      setStatus(`B-roll ${i+1}/${plan.scenes.length} ready…`);
-    }
-    setStatus("Cinematic B-roll ready.");
-  }catch(e){setStatus("B-roll error: "+e.message)}
-};
-
-async function getAudioBuffer(url){
-  audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
-  const ab=await fetch(url).then(r=>r.arrayBuffer());return await audioCtx.decodeAudioData(ab);
-}
-
-$("renderBtn").onclick=async()=>{
-  if(!plan?.voiceChunks?.length){setStatus("Build voices first.");return}
-  try{
-    $("renderBtn").disabled=true;setStatus("Rendering 9:16 video with narration…");
-    const stream=canvas.captureStream(30);
-    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
-    const dest=audioCtx.createMediaStreamDestination();
-    const master=audioCtx.createGain();master.gain.value=.9;master.connect(dest);
-    const buffers=[];for(const u of plan.voiceChunks)buffers.push(await getAudioBuffer(u));
-    const total=buffers.reduce((n,b)=>n+b.duration,0);
-    const recorder=new MediaRecorder(new MediaStream([...stream.getVideoTracks(),...dest.stream.getAudioTracks()]),{mimeType:"video/webm;codecs=vp9,opus"});
-    const parts=[];recorder.ondataavailable=e=>e.data.size&&parts.push(e.data);
-    const done=new Promise(res=>recorder.onstop=()=>res(new Blob(parts,{type:"video/webm"})));
-    recorder.start(500);
-    let offset=0;
-    start=performance.now();cancelAnimationFrame(raf);loop();
-    for(const b of buffers){
-      const node=audioCtx.createBufferSource();node.buffer=b;node.connect(master);
-      node.start(0);await new Promise(r=>setTimeout(r,b.duration*1000));offset+=b.duration;
-    }
-    await new Promise(r=>setTimeout(r,250));recorder.stop();
-    lastBlob=await done;
-    $("exportBtn").disabled=false;setStatus(`Done. ${Math.round(total)}s WebM ready.`);
-    $("renderBtn").disabled=false;
-  }catch(e){setStatus("Render error: "+e.message);$("renderBtn").disabled=false}
-};
-
-$("exportBtn").onclick=()=>{
-  if(!lastBlob)return;
-  const a=document.createElement("a");a.href=URL.createObjectURL(lastBlob);a.download="silent-power-short.webm";a.click();
-};
-$("playBtn").onclick=()=>{start=performance.now();cancelAnimationFrame(raf);loop()};
-drawFrame(0);
-</script>
-</body></html>
+const $=id=>document.getElementById(id);let plan=null,studioImg=null,broll=[],voiceUrls=[],lastBlob=null,raf=0,start=0,audioCtx=null,musicFile=null;const cv=$("cv"),c=cv.getContext("2d");
+const esc=s=>String(s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function setStatus(s,p=0){$("status").textContent=s;$("bar").style.width=Math.max(0,Math.min(100,p))+"%"}
+async function api(path,body){const r=await fetch(path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.detail?`${d.error||'Request failed'} — ${d.detail}`:(d.error||'Request failed'));return d}
+function cover(img,zoom=1,x=0,y=0){const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,scale=Math.max(720/iw,1280/ih)*zoom,sw=720/scale,sh=1280/scale,sx=Math.max(0,Math.min(iw-sw,(iw-sw)/2+x*(iw-sw))),sy=Math.max(0,Math.min(ih-sh,(ih-sh)/2+y*(ih-sh)));c.drawImage(img,sx,sy,sw,sh,0,0,720,1280)}
+function wrap(t,x,y,w,lh,max){const words=String(t||'').split(/\s+/),lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(c.measureText(test).width>w&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);lines.slice(0,max).forEach((l,i)=>c.fillText(l,x,y+i*lh))}
+function sceneAt(t){const n=plan?.scenes?.length||1;return Math.min(n-1,Math.floor(t/Math.max(.1,(plan?.duration||45)/n)))}
+function draw(t){c.clearRect(0,0,720,1280);const idx=sceneAt(t),sc=plan?.scenes?.[idx]||{};if(studioImg){if(sc.shot==='BROLL'&&broll[idx])cover(broll[idx],1.04,.1,.05);else{let z=1.02+.045*Math.sin(t*.7);let x=sc.shot==='MALE_CLOSE'?-0.28:sc.shot==='FEMALE_CLOSE'?0.28:0;cover(studioImg,z,x,0)}}else{c.fillStyle='#08090b';c.fillRect(0,0,720,1280);c.fillStyle='#e2b84d';c.font='900 34px Arial';c.fillText('SILENT POWER',40,70);c.fillStyle='#6d7379';c.font='15px Arial';c.fillText('ULTIMATE REALISTIC PODCAST ENGINE',40,100)}
+const g=c.createLinearGradient(0,0,0,240);g.addColorStop(0,'#050608ee');g.addColorStop(1,'#05060800');c.fillStyle=g;c.fillRect(0,0,720,240);c.fillStyle='#e2b84d';c.font='900 25px Arial';c.fillText('SILENT POWER',36,50);c.fillStyle='#aeb4ba';c.font='12px Arial';c.fillText('POWER BEGINS WHERE NOISE ENDS.',36,75);
+if(sc.caption){c.fillStyle='#000000c9';c.roundRect(26,975,668,180,18);c.fill();c.fillStyle='#fff';c.font='900 29px Arial';wrap(sc.caption,52,1028,610,39,3);c.fillStyle='#e2b84d';c.font='900 14px Arial';c.fillText(sc.speaker==='A'?'HOST A • MALE':'HOST B • FEMALE',52,1137)}
+c.fillStyle='#ffffffcc';c.font='11px Arial';c.fillText('SILENT POWER',36,1235);c.fillStyle='#e2b84d';c.fillRect(36,1250,648*(plan?Math.min(1,t/(plan.duration||45)):0),3)}
+function loop(){draw((performance.now()-start)/1000);raf=requestAnimationFrame(loop)}
+function renderScenes(){
+$("scenes").innerHTML=plan.scenes.map((s,i)=>`<div class="scene" data-i="${i}"><span class="tag">${esc(s.shot)}</span><div class="meta">${i+1} • HOST ${esc(s.speaker)}</div><b>${esc(s.caption)}</b><small>${esc(s.dialogue)}</small></div>`).join('');
+$("timeline").innerHTML=plan.scenes.map((s,i)=>`<div class="seg"><b>${i+1} • ${esc(s.speaker)}</b><span>${esc(s.caption)}</span></div>`).join('')}
+async function buildStory(){setStatus('Writing the original two-host conversation…',12);plan=await api('/api/story',{script:$('script').value,language:$('language').value,duration:$('duration').value,style:$('look').value});renderScenes();$('studio').disabled=false;$('voice').disabled=false;$('broll').disabled=false;setStatus('Story ready.',25);}
+async function buildStudio(){setStatus('Generating the photorealistic studio…',32);const d=await api('/api/studio',{look:$('look').value});studioImg=new Image();studioImg.src=d.dataURI;await studioImg.decode();setStatus('Realistic studio ready.',45)}
+async function buildVoices(){setStatus('Generating professional host voices…',48);voiceUrls=[];const pair=$('voices').value.split(',');for(let i=0;i<plan.scenes.length;i++){const s=plan.scenes[i];if(s.shot==='BROLL')continue;const d=await api('/api/voice',{text:s.dialogue,speaker:s.speaker==='A'?pair[0]:pair[1]});const bin=atob(d.base64),a=new Uint8Array(bin.length);for(let j=0;j<bin.length;j++)a[j]=bin.charCodeAt(j);voiceUrls.push({i,url:URL.createObjectURL(new Blob([a],{type:'audio/mpeg'}))});setStatus(`Voice ${i+1}/${plan.scenes.length} ready…`,48+(i+1)/plan.scenes.length*15)}if(voiceUrls[0]){$('audio').style.display='block';$('audio').src=voiceUrls[0].url}setStatus('Voices ready.',64)}
+async function buildBroll(){setStatus('Generating cinematic B-roll…',67);broll=[];for(let i=0;i<plan.scenes.length;i++){const s=plan.scenes[i];if(s.shot!=='BROLL'){broll[i]=null;continue}const d=await api('/api/image',{prompt:s.visual});const im=new Image();im.src=d.dataURI;await im.decode();broll[i]=im;setStatus(`B-roll ${i+1} ready…`,67+(i+1)/plan.scenes.length*12)}setStatus('B-roll ready.',80)}
+async function decode(url){audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();return audioCtx.decodeAudioData(await fetch(url).then(r=>r.arrayBuffer()))}
+async function render(){if(!studioImg||!voiceUrls.length){setStatus('Complete Studio + Voices first.',80);return}setStatus('Rendering cinematic 9:16 video…',84);audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();await audioCtx.resume();const dest=audioCtx.createMediaStreamDestination(),master=audioCtx.createGain();master.gain.value=.82;master.connect(dest);let music=null;if(musicFile){try{music=await audioCtx.decodeAudioData(await musicFile.arrayBuffer());const ms=audioCtx.createBufferSource(),mg=audioCtx.createGain();ms.buffer=music;mg.gain.value=.08;ms.connect(mg).connect(master);ms.start()}catch(_){}}
+const buffers=[];for(const v of voiceUrls)buffers.push({i:v.i,b:await decode(v.url)});const stream=cv.captureStream(30),mix=new MediaStream([...stream.getVideoTracks(),...dest.stream.getAudioTracks()]);const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));const rec=new MediaRecorder(mix,mime?{mimeType:mime}:{}) ,parts=[];rec.ondataavailable=e=>e.data.size&&parts.push(e.data);const done=new Promise(r=>rec.onstop=()=>r(new Blob(parts,{type:'video/webm'})));rec.start(500);start=performance.now();cancelAnimationFrame(raf);loop();for(const v of buffers){const n=audioCtx.createBufferSource();n.buffer=v.b;n.connect(master);n.start();await new Promise(r=>setTimeout(r,v.b.duration*1000))}await new Promise(r=>setTimeout(r,350));rec.stop();lastBlob=await done;$('export').disabled=false;$('export2').disabled=false;setStatus('DONE — cinematic WebM is ready.',100);}
+$('generate').onclick=async()=>{try{$('generate').disabled=true;$('state').textContent='BUILDING';await buildStory();await buildStudio();await buildVoices();await buildBroll();$('render').disabled=false;await render();$('state').textContent='READY';}catch(e){setStatus('ERROR: '+e.message);$('state').textContent='ERROR'}finally{$('generate').disabled=false}};
+$('story').onclick=async()=>{try{await buildStory()}catch(e){setStatus('ERROR: '+e.message)}};$('studio').onclick=async()=>{try{await buildStudio()}catch(e){setStatus('ERROR: '+e.message)}};$('voice').onclick=async()=>{try{await buildVoices();$('render').disabled=false}catch(e){setStatus('ERROR: '+e.message)}};$('broll').onclick=async()=>{try{await buildBroll()}catch(e){setStatus('ERROR: '+e.message)}};$('render').onclick=async()=>{try{await render()}catch(e){setStatus('ERROR: '+e.message)}};
+function exportVideo(){if(!lastBlob)return;const a=document.createElement('a');a.href=URL.createObjectURL(lastBlob);a.download='silent-power-cinematic-podcast-short.webm';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000)}$('export').onclick=exportVideo;$('export2').onclick=exportVideo;$('music').onchange=e=>{musicFile=e.target.files?.[0]||null;setStatus(musicFile?'Licensed music attached.':'Music removed.')};
+draw(0);
+</script></body></html>
