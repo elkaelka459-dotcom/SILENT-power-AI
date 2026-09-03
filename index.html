@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Silent Power Studio</title>
+<style>
+body{margin:0;background:#070707;color:#eee;font-family:Arial,sans-serif}header{padding:18px 28px;border-bottom:1px solid #3a2a10;display:flex;justify-content:space-between}b,.gold{color:#d8aa3d}.app{max-width:1200px;margin:auto;padding:28px;display:grid;grid-template-columns:1fr 420px;gap:25px}.box{background:#111;border:1px solid #30250f;border-radius:16px;padding:20px}textarea{width:100%;height:300px;background:#080808;color:#fff;border:1px solid #493817;border-radius:10px;padding:14px;box-sizing:border-box;font-size:15px}button{padding:12px 18px;margin:10px 5px 0 0;border-radius:9px;border:1px solid #80601e;background:#0b0b0b;color:#fff;font-weight:bold;cursor:pointer}.primary{background:#d8aa3d;color:#080808}.phone{width:360px;max-width:90vw;aspect-ratio:9/16;border:1px solid #80601e;border-radius:20px;overflow:hidden;margin:auto}canvas{width:100%;height:100%}.scene{font-size:12px;border:1px solid #292929;padding:9px;margin-top:7px;border-radius:8px;color:#bbb}@media(max-width:850px){.app{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header><div><b style="letter-spacing:3px">SILENT POWER</b><small style="display:block;color:#d8aa3d">POWER BEGINS WHERE NOISE ENDS.</small></div><span>Cartoon Shorts Studio</span></header>
+<div class="app"><section>
+<h1>Script → <span class="gold">Cartoon Short</span></h1>
+<div class="box"><label class="gold">YOUR SCRIPT</label>
+<textarea id="script">Nobody is coming to save you.
+
+Stop waiting for motivation. Stop waiting for the perfect moment.
+Nobody can do the work for you.
+
+There will be days when you feel tired. Do it anyway.
+Keep the promise you made to yourself when nobody was watching.
+
+That's discipline.
+Become the person who can save himself.
+
+Silent Power. Master your mind. Control your life.</textarea>
+<br><button class="primary" onclick="generate()">✦ GENERATE SHORT</button>
+<button onclick="voice()">▶ PREVIEW VOICE</button><button onclick="stopVoice()">■ STOP</button>
+<button onclick="record()">● RECORD VIDEO</button><button id="dl" disabled onclick="download()">↓ EXPORT VIDEO</button>
+<p id="status">Ready — no credits or coins inside this app.</p></div>
+<div class="box"><b>SCENE PLAN</b><div id="scenes"></div></div>
+</section>
+<section><div class="phone"><canvas id="cv" width="720" height="1280"></canvas></div><p id="time" style="text-align:center;color:#999">00:00</p></section></div>
+<script>
+const cv=document.getElementById('cv'),c=cv.getContext('2d');let scenes=[],idx=0,blob=null;
+function generate(){let a=document.getElementById('script').value.split(/(?<=[.!?])\s+|\n+/).filter(x=>x.trim()).slice(0,7);scenes=a.map((t,i)=>({title:i?'POWER':'THE HOOK',text:t.toUpperCase()}));document.getElementById('scenes').innerHTML=scenes.map((s,i)=>'<div class="scene"><b>'+String(i+1).padStart(2,'0')+' • '+s.title+'</b><br>'+s.text+'</div>').join('');document.getElementById('status').textContent=scenes.length+' scenes ready.'}
+function draw(t=0){let g=c.createRadialGradient(360,300,20,360,600,800);g.addColorStop(0,'#2a200d');g.addColorStop(1,'#050505');c.fillStyle=g;c.fillRect(0,0,720,1280);
+let p=idx%2; c.fillStyle='#101010';c.beginPath();c.ellipse(360,650,170,270,0,0,7);c.fill();c.fillStyle='#d2a077';c.beginPath();c.arc(360,430,105,0,7);c.fill();c.fillStyle='#17110b';c.beginPath();c.arc(360,395,108,3.2,6.2);c.fill();c.fillRect(255,395,210,40);
+c.fillStyle='#111';c.beginPath();c.arc(520,650,42,0,7);c.fill();c.strokeStyle='#d8aa3d';c.lineWidth=8;c.beginPath();c.moveTo(520,615);c.lineTo(520,685);c.stroke();
+c.fillStyle='#000d';c.fillRect(35,850,650,290);c.textAlign='center';c.fillStyle='#d8aa3d';c.font='bold 28px Arial';c.fillText((scenes[idx]||{title:'SILENT POWER'}).title,360,915);c.fillStyle='#fff';c.font='bold 43px Arial';let words=((scenes[idx]||{text:'MASTER YOUR MIND. CONTROL YOUR LIFE.'}).text).split(' '),line='',y=980;for(let w of words){let q=line?line+' '+w:w;if(c.measureText(q).width>590){c.fillText(line,360,y);y+=52;line=w}else line=q}c.fillText(line,360,y);c.fillStyle='#d8aa3d';c.font='bold 20px Arial';c.fillText('SILENT POWER',360,1215);requestAnimationFrame(draw)} 
+function voice(){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(document.getElementById('script').value);u.rate=.92;u.pitch=.8;speechSynthesis.speak(u)}
+function stopVoice(){speechSynthesis.cancel()}
+async function record(){if(!scenes.length)generate();let stream=cv.captureStream(30),r=new MediaRecorder(stream,{mimeType:'video/webm'}),chunks=[];r.ondataavailable=e=>e.data.size&&chunks.push(e.data);r.onstop=()=>{blob=new Blob(chunks,{type:'video/webm'});document.getElementById('dl').disabled=false;document.getElementById('status').textContent='Video ready — Export Video.'};r.start();let start=performance.now(),dur=Math.max(18000,scenes.length*4000);function loop(now){let e=now-start;idx=Math.min(scenes.length-1,Math.floor(e/(dur/scenes.length)));document.getElementById('time').textContent='00:'+String(Math.floor(e/1000)).padStart(2,'0');if(e<dur)requestAnimationFrame(loop);else r.stop()}requestAnimationFrame(loop)}
+function download(){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='silent-power-cartoon-short.webm';a.click()}
+generate();draw();
+</script></body></html>
