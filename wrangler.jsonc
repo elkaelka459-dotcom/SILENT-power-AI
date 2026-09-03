@@ -1,1 +1,13 @@
-{"$schema":"node_modules/wrangler/config-schema.json","name":"silent-power-ai","main":"src/index.js","compatibility_date":"2026-09-03","assets":{"directory":"./public","binding":"ASSETS"},"ai":{"binding":"AI"}}
+{
+  "$schema":"node_modules/wrangler/config-schema.json",
+  "name":"silent-power-ai",
+  "main":"src/index.js",
+  "compatibility_date":"2026-09-03",
+  "assets":{
+    "directory":"./public",
+    "binding":"ASSETS",
+    "not_found_handling":"single-page-application",
+    "run_worker_first":["/api/*"]
+  },
+  "ai":{"binding":"AI"}
+}

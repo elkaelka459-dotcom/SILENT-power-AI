@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Silent Power Studio V3</title>
+<style>
+:root{--bg:#080808;--panel:#111;--line:#292929;--gold:#d6aa45;--text:#f5f5f5;--muted:#9a9a9a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% 0,#1a150b 0,#080808 42%);color:var(--text);font-family:Inter,Arial,sans-serif}
+.wrap{max-width:1280px;margin:auto;padding:28px}.brand{display:flex;align-items:center;gap:14px}.logo{width:48px;height:48px;border:1px solid #6f5724;border-radius:12px;display:grid;place-items:center;color:var(--gold);font-weight:900;letter-spacing:1px}.brand h1{font-size:18px;margin:0;letter-spacing:3px}.brand p{margin:3px 0 0;color:#8f8f8f;font-size:11px;letter-spacing:2px}
+.hero{margin:34px 0 22px}.hero h2{font-size:46px;line-height:1.03;margin:0;max-width:800px}.hero h2 span{color:var(--gold)}.hero p{color:#aaa;max-width:760px;line-height:1.6}
+.grid{display:grid;grid-template-columns:420px 1fr;gap:22px}.panel{background:rgba(17,17,17,.92);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 20px 60px #0008}.label{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:2px;margin:0 0 9px}
+textarea,select,input{width:100%;background:#090909;color:#fff;border:1px solid #303030;border-radius:12px;padding:13px;font:inherit;outline:none}textarea{min-height:230px;resize:vertical;line-height:1.55}select{cursor:pointer}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.btn{border:1px solid #4d4d4d;background:#151515;color:#fff;border-radius:12px;padding:13px;font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(180deg,#e1ba5b,#b88a2e);color:#090909;border-color:#e1ba5b}.btn:disabled{opacity:.45;cursor:not-allowed}.status{margin-top:12px;color:#aaa;font-size:12px;min-height:18px}
+.stage{display:grid;grid-template-columns:minmax(270px,390px) 1fr;gap:18px}.phone{background:#000;border:1px solid #353535;border-radius:25px;padding:9px;aspect-ratio:9/16;max-height:720px;margin:auto;box-shadow:0 0 0 1px #000,0 30px 80px #000}.phone canvas{width:100%;height:100%;display:block;border-radius:18px;background:#101010}
+.scenes{min-height:300px}.scene{border:1px solid #252525;background:#0c0c0c;border-radius:12px;padding:12px;margin-bottom:8px}.scene strong{color:var(--gold);font-size:12px}.scene b{display:block;margin:4px 0;font-size:14px}.scene small{color:#999;line-height:1.4}
+.pill{display:inline-block;border:1px solid #3a3020;color:var(--gold);padding:5px 8px;border-radius:999px;font-size:10px;letter-spacing:1px}
+.footer{color:#666;font-size:11px;margin-top:18px;text-align:center}
+@media(max-width:950px){.grid{grid-template-columns:1fr}.stage{grid-template-columns:1fr}.phone{max-height:none;width:min(390px,100%)}.hero h2{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="brand">
+    <div class="logo">SP</div>
+    <div><h1>SILENT POWER STUDIO</h1><p>POWER BEGINS WHERE NOISE ENDS.</p></div>
+  </header>
+
+  <section class="hero">
+    <span class="pill">V3 • TWO-HOST MOTIVATIONAL PODCAST</span>
+    <h2>Turn one idea into a <span>cinematic Short.</span></h2>
+    <p>Original two-person podcast dialogue, AI storyboarding, AI B-roll, professional narration, animated hosts, captions and a 9:16 export — built around the Silent Power identity.</p>
+  </section>
+
+  <main class="grid">
+    <section class="panel">
+      <div class="label">Your idea or script</div>
+      <textarea id="script" placeholder="Example: Stop waiting for motivation. Discipline is what you do when nobody is watching.">Stop waiting for motivation. Stop waiting for the perfect moment. Nobody is coming to do the work for you.
+
+There will be days when you feel tired. Do it anyway. Keep the promise you made to yourself when nobody was watching.
+
+That's discipline. Become the person who can save himself.</textarea>
+
+      <div class="row">
+        <div><div class="label">Language</div><select id="language"><option>English</option><option>Spanish</option><option>French</option><option>Arabic</option></select></div>
+        <div><div class="label">Length</div><select id="duration"><option value="30">30 sec</option><option value="45" selected>45 sec</option><option value="60">60 sec</option></select></div>
+      </div>
+      <div class="row">
+        <div><div class="label">Visual style</div><select id="style"><option>Premium cinematic 3D cartoon podcast</option><option>Stylized realistic animation</option><option>Dark cinematic graphic novel</option></select></div>
+        <div><div class="label">Voice pair</div><select id="voices"><option value="zeus,luna">Deep male + calm female</option><option value="atlas,athena">Deep male + confident female</option><option value="orion,hera">Warm male + warm female</option></select></div>
+      </div>
+
+      <div class="btns">
+        <button class="btn primary" id="storyBtn">GENERATE PODCAST</button>
+        <button class="btn" id="voiceBtn" disabled>BUILD VOICES</button>
+        <button class="btn" id="visualBtn" disabled>GENERATE B-ROLL</button>
+        <button class="btn primary" id="renderBtn" disabled>RENDER SHORT</button>
+      </div>
+      <div class="status" id="status">Ready.</div>
+      <audio id="audio" controls style="width:100%;margin-top:8px;display:none"></audio>
+    </section>
+
+    <section class="panel stage">
+      <div class="phone"><canvas id="canvas" width="720" height="1280"></canvas></div>
+      <div>
+        <div class="label">AI scene plan</div>
+        <div id="scenes" class="scenes"><div class="scene"><strong>WAITING</strong><b>Your podcast will appear here.</b><small>Generate the podcast to create an original two-host conversation.</small></div></div>
+        <div class="btns">
+          <button class="btn" id="playBtn" disabled>PLAY PREVIEW</button>
+          <button class="btn" id="exportBtn" disabled>EXPORT WEBM</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="footer">Original Silent Power characters and scripts. Use only media you own or are licensed to use.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let plan=null, audioBlob=null, broll=[], recording=null, lastBlob=null, raf=0, start=0, audioCtx=null, sourceNode=null;
+const canvas=$("canvas"), ctx=canvas.getContext("2d");
+
+function setStatus(t){$("status").textContent=t}
+function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+function drawAvatar(x,y,scale,side,talking,emotion){
+  ctx.save(); ctx.translate(x,y); ctx.scale(scale,scale);
+  // chair
+  ctx.fillStyle="#151515"; ctx.beginPath(); ctx.roundRect(-90,95,180,150,35); ctx.fill();
+  // body/jacket
+  ctx.fillStyle=side==="male"?"#1a1a1a":"#252018"; ctx.beginPath(); ctx.roundRect(-92,55,184,145,45); ctx.fill();
+  ctx.strokeStyle="#a27a2b";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(0,70);ctx.lineTo(0,180);ctx.stroke();
+  // neck
+  ctx.fillStyle="#c8875f";ctx.fillRect(-22,25,44,55);
+  // head
+  ctx.fillStyle="#c8875f";ctx.beginPath();ctx.ellipse(0,-20,72,86,0,0,Math.PI*2);ctx.fill();
+  // hair
+  ctx.fillStyle=side==="male"?"#17110d":"#21160f";ctx.beginPath();
+  if(side==="male"){ctx.arc(0,-48,72,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(-70,-48,140,28)}
+  else {ctx.arc(0,-52,75,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(-74,-48,148,74)}
+  // eyes
+  ctx.fillStyle="#070707";ctx.beginPath();ctx.ellipse(-25,-23,7,4,0,0,Math.PI*2);ctx.ellipse(25,-23,7,4,0,0,Math.PI*2);ctx.fill();
+  // nose
+  ctx.strokeStyle="#9b6245";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(-4,8);ctx.lineTo(8,10);ctx.stroke();
+  // mouth talking
+  ctx.fillStyle="#2b1110";ctx.beginPath();ctx.ellipse(0,31,talking?18:11,talking?10:4,0,0,Math.PI*2);ctx.fill();
+  if(talking){ctx.fillStyle="#eee";ctx.beginPath();ctx.ellipse(0,29,10,3,0,0,Math.PI*2);ctx.fill()}
+  // headphones
+  ctx.strokeStyle="#b48a38";ctx.lineWidth=6;ctx.beginPath();ctx.arc(0,-32,83,Math.PI*1.05,Math.PI*1.95);ctx.stroke();
+  ctx.fillStyle="#b48a38";ctx.fillRect(-87,-12,14,38);ctx.fillRect(73,-12,14,38);
+  // mic
+  ctx.strokeStyle="#b48a38";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(side==="male"?75:-75,65);ctx.lineTo(side==="male"?55:-55,5);ctx.stroke();
+  ctx.fillStyle="#1c1c1c";ctx.beginPath();ctx.roundRect(side==="male"?42:-62,-3,20,55,10);ctx.fill();
+  ctx.restore();
+}
+
+function drawFrame(t){
+  ctx.clearRect(0,0,720,1280);
+  const g=ctx.createLinearGradient(0,0,720,1280);g.addColorStop(0,"#0d0d0d");g.addColorStop(1,"#030303");ctx.fillStyle=g;ctx.fillRect(0,0,720,1280);
+  if(broll.length){
+    const img=broll[Math.min(broll.length-1, Math.floor((t/Math.max(1,(plan?.scenes?.length||1)))))];
+    if(img && img.complete){ctx.globalAlpha=.28;ctx.drawImage(img,0,0,720,1280);ctx.globalAlpha=1}
+  }
+  ctx.fillStyle="#0a0a0acc";ctx.fillRect(0,0,720,120);
+  ctx.fillStyle="#d6aa45";ctx.font="900 26px Arial";ctx.fillText("SILENT POWER",38,54);
+  ctx.fillStyle="#9b9b9b";ctx.font="14px Arial";ctx.fillText("POWER BEGINS WHERE NOISE ENDS.",38,82);
+
+  const sceneCount=plan?.scenes?.length||1, idx=Math.min(sceneCount-1,Math.floor(t/Math.max(1,(plan?.duration||45)/sceneCount)));
+  const sc=plan?.scenes?.[idx]||{speaker:"A",dialogue:"Your story starts here.",caption:"SILENT POWER"};
+  const talkA=sc.speaker==="A" && Math.floor(t*5)%2===0, talkB=sc.speaker==="B" && Math.floor(t*5)%2===0;
+  drawAvatar(190,690,1.22,"male",talkA,"calm"); drawAvatar(530,690,1.22,"female",talkB,"calm");
+  // table
+  ctx.fillStyle="#111";ctx.beginPath();ctx.ellipse(360,865,265,72,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#9a742d";ctx.lineWidth=2;ctx.stroke();
+  // caption card
+  ctx.fillStyle="#f2f2f2";ctx.beginPath();ctx.roundRect(35,955,650,180,24);ctx.fill();
+  ctx.fillStyle="#111";ctx.font="900 29px Arial";wrapText(sc.caption||sc.dialogue,55,1005,610,42,3);
+  ctx.fillStyle="#d6aa45";ctx.font="900 16px Arial";ctx.fillText(sc.speaker==="A"?"HOST A":"HOST B",55,1180);
+  ctx.fillStyle="#777";ctx.font="12px Arial";ctx.fillText("MASTER YOUR MIND. CONTROL YOUR LIFE.",55,1210);
+}
+function wrapText(text,x,y,maxW,lineH,maxLines){
+  const words=String(text).split(/\s+/);let line="",lines=[];
+  for(const w of words){const test=line?line+" "+w:w;if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=w}else line=test}
+  if(line)lines.push(line);lines=lines.slice(0,maxLines);lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineH))
+}
+function loop(){const t=(performance.now()-start)/1000;drawFrame(t);raf=requestAnimationFrame(loop)}
+
+async function api(path,body){
+  const r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(data.error||"Request failed");
+  return data;
+}
+
+$("storyBtn").onclick=async()=>{
+  try{
+    setStatus("Creating the two-host conversation…");
+    plan=await api("/api/story",{script:$("script").value,language:$("language").value,duration:$("duration").value,style:$("style").value});
+    $("scenes").innerHTML=plan.scenes.map((s,i)=>`<div class="scene"><strong>SCENE ${i+1} • ${escapeHtml(s.speaker)}</strong><b>${escapeHtml(s.caption)}</b><small>${escapeHtml(s.dialogue)}<br><br>${escapeHtml(s.visual)}</small></div>`).join("");
+    $("voiceBtn").disabled=false;$("visualBtn").disabled=false;
+    setStatus(`${plan.scenes.length} scenes ready. Build the voices and B-roll.`);
+    start=performance.now();cancelAnimationFrame(raf);loop();
+  }catch(e){setStatus("Error: "+e.message)}
+};
+
+$("voiceBtn").onclick=async()=>{
+  if(!plan)return;
+  try{
+    setStatus("Generating professional narration…");
+    const pair=$("voices").value.split(",");
+    const chunks=[];
+    for(let i=0;i<plan.scenes.length;i++){
+      const s=plan.scenes[i];
+      const d=await api("/api/voice",{text:s.dialogue,speaker:s.speaker==="A"?pair[0]:pair[1]});
+      const bin=atob(d.base64), arr=new Uint8Array(bin.length);for(let j=0;j<bin.length;j++)arr[j]=bin.charCodeAt(j);
+      chunks.push(arr);
+    }
+    // MP3 chunks are kept individually for robust playback/rendering.
+    plan.voiceChunks=chunks.map(a=>URL.createObjectURL(new Blob([a],{type:"audio/mpeg"})));
+    audioBlob=null;
+    $("audio").style.display="block";
+    $("audio").src=plan.voiceChunks[0];
+    $("renderBtn").disabled=false;$("exportBtn").disabled=false;
+    setStatus("Voices ready. You can render the full Short.");
+  }catch(e){setStatus("Voice error: "+e.message)}
+};
+
+$("visualBtn").onclick=async()=>{
+  if(!plan)return;
+  try{
+    setStatus("Generating cinematic B-roll scenes…");broll=[];
+    for(let i=0;i<plan.scenes.length;i++){
+      const d=await api("/api/image",{prompt:plan.scenes[i].visual,style:$("style").value});
+      const img=new Image();img.src=d.dataURI;await img.decode();broll.push(img);
+      setStatus(`B-roll ${i+1}/${plan.scenes.length} ready…`);
+    }
+    setStatus("Cinematic B-roll ready.");
+  }catch(e){setStatus("B-roll error: "+e.message)}
+};
+
+async function getAudioBuffer(url){
+  audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+  const ab=await fetch(url).then(r=>r.arrayBuffer());return await audioCtx.decodeAudioData(ab);
+}
+
+$("renderBtn").onclick=async()=>{
+  if(!plan?.voiceChunks?.length){setStatus("Build voices first.");return}
+  try{
+    $("renderBtn").disabled=true;setStatus("Rendering 9:16 video with narration…");
+    const stream=canvas.captureStream(30);
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    const dest=audioCtx.createMediaStreamDestination();
+    const master=audioCtx.createGain();master.gain.value=.9;master.connect(dest);
+    const buffers=[];for(const u of plan.voiceChunks)buffers.push(await getAudioBuffer(u));
+    const total=buffers.reduce((n,b)=>n+b.duration,0);
+    const recorder=new MediaRecorder(new MediaStream([...stream.getVideoTracks(),...dest.stream.getAudioTracks()]),{mimeType:"video/webm;codecs=vp9,opus"});
+    const parts=[];recorder.ondataavailable=e=>e.data.size&&parts.push(e.data);
+    const done=new Promise(res=>recorder.onstop=()=>res(new Blob(parts,{type:"video/webm"})));
+    recorder.start(500);
+    let offset=0;
+    start=performance.now();cancelAnimationFrame(raf);loop();
+    for(const b of buffers){
+      const node=audioCtx.createBufferSource();node.buffer=b;node.connect(master);
+      node.start(0);await new Promise(r=>setTimeout(r,b.duration*1000));offset+=b.duration;
+    }
+    await new Promise(r=>setTimeout(r,250));recorder.stop();
+    lastBlob=await done;
+    $("exportBtn").disabled=false;setStatus(`Done. ${Math.round(total)}s WebM ready.`);
+    $("renderBtn").disabled=false;
+  }catch(e){setStatus("Render error: "+e.message);$("renderBtn").disabled=false}
+};
+
+$("exportBtn").onclick=()=>{
+  if(!lastBlob)return;
+  const a=document.createElement("a");a.href=URL.createObjectURL(lastBlob);a.download="silent-power-short.webm";a.click();
+};
+$("playBtn").onclick=()=>{start=performance.now();cancelAnimationFrame(raf);loop()};
+drawFrame(0);
+</script>
+</body></html>
